@@ -13,11 +13,10 @@ function removeAdElements() {
   }
 }
 
-/**
- * When current DOM is loaded and the host
- */
-window.addEventListener('load', (event) => {
-  if (window.location.hostname === 'www.youtube.com' || 'youtube.com') {
+function checkAndRemoveAd() {
+  if (window.location.hostname === 'www.youtube.com') {
     removeAdElements();
   }
-});
+}
+
+setInterval(checkAndRemoveAd, 100);
