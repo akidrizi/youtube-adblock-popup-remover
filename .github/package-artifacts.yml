@@ -1,0 +1,24 @@
+name: Package Repository
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Zip project
+      run: |
+        zip -r youtube-adblock-popup-remover.zip *
+
+    - name: Upload Package
+      uses: actions/upload-artifact@v2
+      with:
+        name: packaged-repository
+        path: youtube-adblock-popup-remover.zip
