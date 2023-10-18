@@ -1,23 +1,53 @@
-/**
- * Removes ad elements when found.
- */
-function removeAdElements() {
-  const overlayElement = document.querySelector('tp-yt-iron-overlay-backdrop.opened');
-  if (overlayElement) {
-    overlayElement.remove();
-  }
+const POPUP_IDENTIFIERS = ["ytd-popup-container", "tp-yt-iron-overlay-backdrop"];
 
-  const popupElement = document.querySelector('tp-yt-paper-dialog.style-scope.ytd-popup-container');
-  if (popupElement) {
-    popupElement.remove();
+let wasRemoved = false;
+
+/**
+ * Removes all popup elements found in the document.
+ *
+ * @return {boolean} Returns true if any popup element was removed, otherwise false.
+ */
+function removePopupElements() {
+  let removed = false;
+
+  POPUP_IDENTIFIERS.forEach((identifier) => {
+    const element = document.querySelector(identifier);
+
+    if (element) {
+      element.remove();
+      removed = true;
+    }
+  });
+
+  return removed;
+}
+
+/**
+ * Resumes the playback of the current video.
+ */
+function resumeVideo() {
+  const video = document.querySelector("video.html5-main-video");
+  if (video && video.paused && video.currentTime > 0.0) {
+    video.play();
   }
 }
 
 /**
- * When current DOM is loaded and the host
+ * Initializes a MutationObserver to monitor changes in the DOM.
+ *
+ * Removes popup elements and resumes video playback.
+ * Stops execution once the popup is removed.
  */
-window.addEventListener('load', (event) => {
-  if (window.location.hostname === 'www.youtube.com' || 'youtube.com') {
-    removeAdElements();
-  }
-});
+const observerCallback = () => {
+  if (wasRemoved) return;
+
+  wasRemoved = removePopupElements();
+  resumeVideo();
+};
+
+const observer = new MutationObserver(observerCallback);
+
+// Setup observer on the DOM
+if (window.location.hostname === "www.youtube.com") {
+  observer.observe(document.body, { childList: true, subtree: true });
+}
