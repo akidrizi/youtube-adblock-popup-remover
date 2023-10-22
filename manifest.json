@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Youtube Adblock - Popup Remover",
+  "name": "Youtube Adblock Popup Remover",
   "description": "Say goodbye to YouTube's adblock disable requests with this Chrome extension. Enjoy uninterrupted viewing without annoying popups!",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "permissions": [
     "activeTab"
   ],
