@@ -10,18 +10,20 @@ let wasRemoved = false;
  * @return {boolean} Whether the popup element was removed.
  */
 function removePopupElements() {
-  let removed = false;
+    let removed = false;
 
-  POPUP_IDENTIFIERS.forEach((identifier) => {
-    const element = document.querySelector(identifier);
+    POPUP_IDENTIFIERS.forEach((identifier) => {
+        const element = document.querySelector(identifier);
 
-    if (element) {
-      element.remove();
-      removed = true;
-    }
-  });
+        if (element) {
+            element.remove();
+            removed = true;
 
-  return removed;
+            console.info(`[${identifier}] was removed.`)
+        }
+    });
+
+    return removed;
 }
 
 /**
@@ -31,32 +33,32 @@ function removePopupElements() {
  * @returns {Promise}
  */
 function playVideo(video) {
-  return new Promise((resolve, reject) => {
-    video.play()
-      .then(() => {
-        resolve(`[${EXTENSION_NAME} ${EXTENSION_VERSION}]: Video resuming...`);
-      })
-      .catch(error => {
-        reject(`[${EXTENSION_NAME} ${EXTENSION_VERSION}]: Error occurred while playing the video: ${error}`);
-      });
-  });
+    return new Promise((resolve, reject) => {
+        video.play()
+            .then(() => {
+                resolve(`[${EXTENSION_NAME} ${EXTENSION_VERSION}]: Video resuming...`);
+            })
+            .catch(error => {
+                reject(`[${EXTENSION_NAME} ${EXTENSION_VERSION}]: Error occurred while playing the video: ${error}`);
+            });
+    });
 }
 
 /**
  * Resumes the playback of the current video.
  */
 function resumeVideo() {
-  const video = document.querySelector("video.html5-main-video");
-  if (!video || video.currentTime <= 0)
-    return;
+    const video = document.querySelector("video.html5-main-video");
+    if (!video || video.currentTime <= 0)
+        return;
 
-  playVideo(video)
-    .then(message => {
-      console.info(message);
-    })
-    .catch(error => {
-      console.error(error);
-    });
+    playVideo(video)
+        .then(message => {
+            console.info(message);
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }
 
 /**
@@ -64,12 +66,8 @@ function resumeVideo() {
  * Stops execution once the popup is removed.
  */
 const observerCallback = () => {
-  console.info(`[${EXTENSION_NAME} ${EXTENSION_VERSION}]: Popup was ${wasRemoved ? 'removed' : 'not removed'}`);
-  if (wasRemoved)
-    return;
-
-  wasRemoved = removePopupElements();
-  resumeVideo();
+    removePopupElements();
+    resumeVideo();
 };
 
 // Initializes an MutationObserver to execute the observerCallback.
@@ -77,5 +75,5 @@ const observer = new MutationObserver(observerCallback);
 
 // Setup observer on the DOM
 if (window.location.hostname === "www.youtube.com") {
-  observer.observe(document.body, {childList: true, subtree: true});
+    observer.observe(document.body, {childList: true, subtree: true});
 }
